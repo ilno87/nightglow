@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Night Glow Controller</title>
+    <title>Night Glow Simulator</title>
     <style>
         * {
             margin: 0;
@@ -40,13 +40,9 @@
             display: flex;
             gap: 20px;
             margin-top: 0px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 25px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 25px 35px;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             justify-content: space-between;
         }
 
@@ -358,30 +354,32 @@
             }
             
             .controls {
-                gap: 15px;
-                padding: 20px;
-                max-width: 100%;
-                width: calc(100% - 20px);
-                margin: 20px 10px 0;
+                gap: 25px;
+                padding: 20px 15px;
+                max-width: 95%;
+                width: 95%;
+                margin: 20px auto 0;
+                justify-content: center;
+                display: flex;
+                background: none;
             }
             
             .control-btn {
-                width: 70px;
-                height: 70px;
-                font-size: 24px;
-                flex: 1;
-                max-width: none;
+                width: 75px;
+                height: 75px;
+                font-size: 26px;
+                flex: 0 0 auto;
             }
 
             .balloon-row {
                 gap: 25px;
-                margin-bottom: 60px;
+                margin-bottom: 140px;
                 justify-content: center;
             }
             
             .burner-row {
                 gap: 35px;
-                margin-bottom: 25px;
+                margin-bottom: 45px;
                 justify-content: center;
             }
             
@@ -432,15 +430,21 @@
 
         @media (max-width: 480px) {
             .controls {
-                gap: 10px;
-                padding: 15px;
-                margin: 15px 5px 0;
+                gap: 20px;
+                padding: 18px 12px;
+                margin: 15px auto 0;
+                width: 95%;
+                max-width: 95%;
+                justify-content: center;
+                display: flex;
+                background: none;
             }
             
             .control-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 20px;
+                width: 70px;
+                height: 70px;
+                font-size: 24px;
+                flex: 0 0 auto;
             }
 
             .balloon {
@@ -465,12 +469,12 @@
 
             .balloon-row {
                 gap: 15px;
-                margin-bottom: 40px;
+                margin-bottom: 110px;
             }
             
             .burner-row {
                 gap: 20px;
-                margin-bottom: 20px;
+                margin-bottom: 35px;
             }
         }
 
