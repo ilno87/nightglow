@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Night Glow Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 30%, #2d1b69 70%, #0f0f0f 100%);
+            color: white;
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-top: 0px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-btn {
+            width: 80px;
+            height: 80px;
+            border: none;
+            border-radius: 15px;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            user-select: none;
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-red {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: white;
+        }
+
+        .btn-red.active {
+            background: linear-gradient(135deg, #ff6666, #ff0000);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            animation: pulse-red 0.8s ease-in-out infinite alternate;
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #44ff44, #00cc00);
+            color: white;
+        }
+
+        .btn-green.active {
+            background: linear-gradient(135deg, #66ff66, #00ff00);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+            animation: pulse-green 0.8s ease-in-out infinite alternate;
+        }
+
+        .btn-blue {
+            background: linear-gradient(135deg, #4444ff, #0000cc);
+            color: white;
+        }
+
+        .btn-blue.active {
+            background: linear-gradient(135deg, #6666ff, #0000ff);
+            box-shadow: 0 0 30px rgba(0, 0, 255, 0.8);
+            animation: pulse-blue 0.8s ease-in-out infinite alternate;
+        }
+
+        .btn-yellow {
+            background: linear-gradient(135deg, #ffff44, #cccc00);
+            color: #333;
+        }
+
+        .btn-yellow.active {
+            background: linear-gradient(135deg, #ffff66, #ffff00);
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
+            animation: pulse-yellow 0.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
+            100% { box-shadow: 0 0 40px rgba(255, 0, 0, 1); }
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.6); }
+            100% { box-shadow: 0 0 40px rgba(0, 255, 0, 1); }
+        }
+
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 20px rgba(0, 0, 255, 0.6); }
+            100% { box-shadow: 0 0 40px rgba(0, 0, 255, 1); }
+        }
+
+        @keyframes pulse-yellow {
+            0% { box-shadow: 0 0 20px rgba(255, 255, 0, 0.6); }
+            100% { box-shadow: 0 0 40px rgba(255, 255, 0, 1); }
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .balloon-row {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 60px;
+            margin-bottom: 130px;
+        }
+
+        .burner-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 80px;
+            margin-bottom: 40px;
+        }
+
+        .balloon {
+            width: 120px;
+            height: 150px;
+            position: relative;
+            filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.4));
+        }
+
+        .balloon-envelope {
+            width: 120px;
+            height: 120px;
+            border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 30%, #3d566e 60%, #4a6741 100%);
+            border: 3px solid #1a252f;
+            position: relative;
+            transition: all 0.6s ease;
+            overflow: hidden;
+        }
+
+        .balloon-envelope::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 20%;
+            width: 30%;
+            height: 40%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%);
+            border-radius: 50%;
+            transform: rotate(-20deg);
+        }
+
+        .balloon.glowing .balloon-envelope {
+            background: radial-gradient(circle at 35% 25%, #ffd700, #ff6347, #ff1493, #9932cc, #4169e1);
+            box-shadow: 
+                0 0 40px rgba(255, 215, 0, 0.9),
+                0 0 80px rgba(255, 99, 71, 0.7),
+                0 0 120px rgba(255, 20, 147, 0.5);
+            animation: balloon-pulse 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes balloon-pulse {
+            0% {
+                box-shadow: 
+                    0 0 30px rgba(255, 215, 0, 0.8),
+                    0 0 60px rgba(255, 99, 71, 0.6),
+                    0 0 90px rgba(255, 20, 147, 0.4);
+                transform: scale(1);
+            }
+            100% {
+                box-shadow: 
+                    0 0 50px rgba(255, 215, 0, 1),
+                    0 0 100px rgba(255, 99, 71, 0.8),
+                    0 0 150px rgba(255, 20, 147, 0.6);
+                transform: scale(1.03);
+            }
+        }
+
+        .balloon-basket {
+            width: 30px;
+            height: 20px;
+            background: linear-gradient(135deg, #8b4513, #a0522d, #cd853f);
+            border: 2px solid #654321;
+            border-radius: 4px;
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .balloon-ropes {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .balloon-rope {
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(to bottom, #444, #222);
+            position: absolute;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .rope-1 { left: -8px; transform: rotate(-4deg); }
+        .rope-2 { left: 8px; transform: rotate(4deg); }
+        .rope-3 { left: -3px; transform: rotate(-1deg); }
+        .rope-4 { left: 3px; transform: rotate(1deg); }
+
+        .burner {
+            width: 80px;
+            height: 120px;
+            position: relative;
+        }
+
+        .burner-base {
+            width: 60px;
+            height: 80px;
+            background: linear-gradient(135deg, #2c3e50, #34495e, #404040);
+            border: 3px solid #1a252f;
+            border-radius: 10px;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .burner-base::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            height: 15px;
+            background: linear-gradient(135deg, #555, #777);
+            border-radius: 5px;
+        }
+
+        .burner-nozzle {
+            width: 20px;
+            height: 25px;
+            background: linear-gradient(135deg, #1a252f, #2c3e50);
+            border-radius: 50% 50% 20% 20%;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 2px solid #0f1419;
+        }
+
+        .flame {
+            position: absolute;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 60px;
+            opacity: 0;
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+
+        .burner.firing .flame {
+            opacity: 1;
+            animation: flame-dance 0.1s ease-in-out infinite alternate;
+        }
+
+        .flame-core {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 45px;
+            background: radial-gradient(circle at center bottom, #0066ff, #00aaff, #ffffff);
+            border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%;
+            box-shadow: 0 0 20px #00aaff, 0 0 40px #0066ff;
+        }
+
+        .flame-outer {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 55px;
+            background: radial-gradient(circle at center bottom, #ff4500, #ff6b35, #ff8c42, #ffa500);
+            border-radius: 50% 50% 50% 50% / 75% 75% 25% 25%;
+            opacity: 0.8;
+            box-shadow: 0 0 30px #ff6b35, 0 0 60px #ff4500;
+        }
+
+        @keyframes flame-dance {
+            0% {
+                transform: translateX(-50%) scale(1) rotate(-1deg);
+                filter: hue-rotate(0deg);
+            }
+            25% {
+                transform: translateX(-50%) scale(1.05, 0.95) rotate(1deg);
+                filter: hue-rotate(5deg);
+            }
+            50% {
+                transform: translateX(-50%) scale(0.98, 1.02) rotate(0deg);
+                filter: hue-rotate(-3deg);
+            }
+            75% {
+                transform: translateX(-50%) scale(1.02, 0.98) rotate(-0.5deg);
+                filter: hue-rotate(2deg);
+            }
+            100% {
+                transform: translateX(-50%) scale(1, 1) rotate(0.5deg);
+                filter: hue-rotate(-1deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .control-btn {
+                width: 65px;
+                height: 65px;
+                font-size: 22px;
+            }
+
+            .balloon-row {
+                gap: 40px;
+            }
+            
+            .burner-row {
+                gap: 60px;
+            }
+            
+            .balloon {
+                width: 100px;
+                height: 130px;
+            }
+            
+            .balloon-envelope {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="field">
+        <!-- 4 Mongolfiere -->
+        <div class="balloon-row">
+            <div class="balloon" data-balloon="1">
+                <div class="balloon-envelope"></div>
+                <div class="balloon-ropes">
+                    <div class="balloon-rope rope-1"></div>
+                    <div class="balloon-rope rope-2"></div>
+                    <div class="balloon-rope rope-3"></div>
+                    <div class="balloon-rope rope-4"></div>
+                </div>
+                <div class="balloon-basket"></div>
+            </div>
+            <div class="balloon" data-balloon="2">
+                <div class="balloon-envelope"></div>
+                <div class="balloon-ropes">
+                    <div class="balloon-rope rope-1"></div>
+                    <div class="balloon-rope rope-2"></div>
+                    <div class="balloon-rope rope-3"></div>
+                    <div class="balloon-rope rope-4"></div>
+                </div>
+                <div class="balloon-basket"></div>
+            </div>
+            <div class="balloon" data-balloon="3">
+                <div class="balloon-envelope"></div>
+                <div class="balloon-ropes">
+                    <div class="balloon-rope rope-1"></div>
+                    <div class="balloon-rope rope-2"></div>
+                    <div class="balloon-rope rope-3"></div>
+                    <div class="balloon-rope rope-4"></div>
+                </div>
+                <div class="balloon-basket"></div>
+            </div>
+            <div class="balloon" data-balloon="4">
+                <div class="balloon-envelope"></div>
+                <div class="balloon-ropes">
+                    <div class="balloon-rope rope-1"></div>
+                    <div class="balloon-rope rope-2"></div>
+                    <div class="balloon-rope rope-3"></div>
+                    <div class="balloon-rope rope-4"></div>
+                </div>
+                <div class="balloon-basket"></div>
+            </div>
+        </div>
+
+        <!-- 3 Bruciatori centrali -->
+        <div class="burner-row">
+            <div class="burner" data-burner="1">
+                <div class="flame">
+                    <div class="flame-outer"></div>
+                    <div class="flame-core"></div>
+                </div>
+                <div class="burner-nozzle"></div>
+                <div class="burner-base"></div>
+            </div>
+            <div class="burner" data-burner="2">
+                <div class="flame">
+                    <div class="flame-outer"></div>
+                    <div class="flame-core"></div>
+                </div>
+                <div class="burner-nozzle"></div>
+                <div class="burner-base"></div>
+            </div>
+            <div class="burner" data-burner="3">
+                <div class="flame">
+                    <div class="flame-outer"></div>
+                    <div class="flame-core"></div>
+                </div>
+                <div class="burner-nozzle"></div>
+                <div class="burner-base"></div>
+            </div>
+        </div>
+
+        <!-- 1 Bruciatore sotto -->
+        <div class="burner-row">
+            <div class="burner" data-burner="4">
+                <div class="flame">
+                    <div class="flame-outer"></div>
+                    <div class="flame-core"></div>
+                </div>
+                <div class="burner-nozzle"></div>
+                <div class="burner-base"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn btn-red" id="redBtn">🔴</button>
+        <button class="control-btn btn-green" id="greenBtn">🟢</button>
+        <button class="control-btn btn-blue" id="blueBtn">🔵</button>
+        <button class="control-btn btn-yellow" id="yellowBtn">🟡</button>
+    </div>
+
+    <script>
+        let activeBurners = new Set();
+        let glowingBalloons = new Set();
+        let activeButtons = new Set();
+
+        // Control button mappings
+        const buttonControls = {
+            red: { balloons: ['1', '2'], burners: [] },      // 2 mongolfiere sinistra
+            green: { balloons: ['3', '4'], burners: [] },    // 2 mongolfiere destra  
+            blue: { balloons: [], burners: ['1', '2', '3'] }, // 3 bruciatori centrali
+            yellow: { balloons: [], burners: ['4'] }         // 1 bruciatore sotto
+        };
+
+        // Setup control button interactions
+        function setupControlButtons() {
+            Object.keys(buttonControls).forEach(color => {
+                const button = document.getElementById(`${color}Btn`);
+                let isPressed = false;
+
+                // Mouse events
+                button.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    if (!isPressed) {
+                        startControl(color);
+                        isPressed = true;
+                    }
+                });
+
+                button.addEventListener('mouseup', () => {
+                    if (isPressed) {
+                        stopControl(color);
+                        isPressed = false;
+                    }
+                });
+
+                button.addEventListener('mouseleave', () => {
+                    if (isPressed) {
+                        stopControl(color);
+                        isPressed = false;
+                    }
+                });
+
+                // Touch events
+                button.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    if (!isPressed) {
+                        startControl(color);
+                        isPressed = true;
+                    }
+                });
+
+                button.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    if (isPressed) {
+                        stopControl(color);
+                        isPressed = false;
+                    }
+                });
+
+                button.addEventListener('touchcancel', (e) => {
+                    e.preventDefault();
+                    if (isPressed) {
+                        stopControl(color);
+                        isPressed = false;
+                    }
+                });
+            });
+
+            // Keyboard support
+            document.addEventListener('keydown', (e) => {
+                const key = e.key.toLowerCase();
+                let color = null;
+                if (key === 'r') color = 'red';
+                else if (key === 'g') color = 'green';
+                else if (key === 'b') color = 'blue';
+                else if (key === 'y') color = 'yellow';
+                
+                if (color && !activeButtons.has(color)) {
+                    startControl(color);
+                }
+            });
+
+            document.addEventListener('keyup', (e) => {
+                const key = e.key.toLowerCase();
+                let color = null;
+                if (key === 'r') color = 'red';
+                else if (key === 'g') color = 'green';
+                else if (key === 'b') color = 'blue';
+                else if (key === 'y') color = 'yellow';
+                
+                if (color && activeButtons.has(color)) {
+                    stopControl(color);
+                }
+            });
+        }
+
+        function startControl(color) {
+            const button = document.getElementById(`${color}Btn`);
+            const control = buttonControls[color];
+            
+            button.classList.add('active');
+            activeButtons.add(color);
+
+            // Light up assigned balloons
+            control.balloons.forEach(balloonId => {
+                const balloon = document.querySelector(`[data-balloon="${balloonId}"]`);
+                balloon.classList.add('glowing');
+                glowingBalloons.add(balloonId);
+            });
+
+            // Start assigned burners
+            control.burners.forEach(burnerId => {
+                const burner = document.querySelector(`[data-burner="${burnerId}"]`);
+                burner.classList.add('firing');
+                activeBurners.add(burnerId);
+            });
+        }
+
+        function stopControl(color) {
+            const button = document.getElementById(`${color}Btn`);
+            const control = buttonControls[color];
+            
+            button.classList.remove('active');
+            activeButtons.delete(color);
+
+            // Turn off assigned balloons
+            control.balloons.forEach(balloonId => {
+                const balloon = document.querySelector(`[data-balloon="${balloonId}"]`);
+                balloon.classList.remove('glowing');
+                glowingBalloons.delete(balloonId);
+            });
+
+            // Stop assigned burners
+            control.burners.forEach(burnerId => {
+                const burner = document.querySelector(`[data-burner="${burnerId}"]`);
+                burner.classList.remove('firing');
+                activeBurners.delete(burnerId);
+            });
+        }
+
+        // Prevent context menu
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        
+        // Initialize
+        setupControlButtons();
+    </script>
+</body>
+</html>
